@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html>
+<title>Youtube Playlist</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+<link rel="icon" href={{ url_for('static', filename = 'images/favicon.ico') }} type="image/x-icon">
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+<style>
+body,h1,h2,h3,h4,h5,h6 {font-family: "Raleway", sans-serif}
+</style>
+
+
+<body class="bg-light">
+  <div class="container">
+    <div class="py-5 text-center">
+      <img class="d-block mx-auto mb-4" src={{ url_for('static', filename = 'images/logo-youtube.png') }} alt="" width="150" height="70">
+      <h2><b>Playlist Controller</b></h2>
+      <p class="lead">Below controls are given through which you can control the paramters which are need to control this application. It automatically creates playlist when time is up and fills that playlist with the videos.</p>
+      <p>
+        <button id="set_parameters" type="button" class="btn btn-outline-dark my-2">Set Parameters</button>
+        <button id="results_table" type="button" class="btn btn-outline-dark my-2">API Settings</button>
+      </p>
+    </div>
+
+    <div id="main-page" class="row">
+      <div class="col-md-12 order-md-1">
+        <div id="{{ message }}">
+            <div class="alert alert-success" role="alert"> <strong> Success! Parameters got saved successfully!  </strong> <button type="button" class="close" data-dismiss="alert" aria-label="Close"> <span aria-hidden="true">&times;</span> </button> </div>
+        </div>
+        <h4 class="mb-3">Search Parameters</h4>
+        <form class="needs-validation" method="POST" action="/setParameters" novalidate="">
+          <div class="row">
+            <div class="col-md-6 mb-3">
+              <label for="searchItem">Search Item</label>
+              <input type="text" class="form-control" name="searchItem" id="searchItem" placeholder="string" value="" required="">
+              <div class="invalid-feedback">
+                Enter Search Query.
+              </div>
+            </div>
+            <div class="col-md-6 mb-3">
+              <label for="maxResults">Max Results</label>
+              <input type="text" class="form-control" name="maxResults" id="maxResults" placeholder="integer" value="" required="">
+              <div class="invalid-feedback">
+                Enter Integer for Max Results to fetch.
+              </div>
+            </div>
+          </div>
+
+          <hr class="mb-4">
+
+          <h4 class="mb-3">Playlist Insert</h4>
+          <div class="row">
+            <div class="col-md-6 mb-3">
+              <label for="playlistTitle">Playlist Title</label>
+              <input type="text" class="form-control" name="playlistTitle" id="playlistTitle" placeholder="string" value="" required="">
+              <div class="invalid-feedback">
+                Please Enter Playlist Title.
+              </div>
+            </div>
+            <div class="col-md-6 mb-3">
+              <label for="playlistDescription">Playlist Description</label>
+              <input type="text" class="form-control" name="playlistDescription" id="playlistDescription" placeholder="string" value="" required="">
+              <div class="invalid-feedback">
+                Please Enter Playlist Description.
+              </div>
+            </div>
+            <div class="col-md-6 mb-3">
+              <label for="privacy">Privacy</label>
+              <select class="custom-select d-block w-100" name="privacy" id="privacy" required="">
+                <option value="">Choose...</option>
+                <option value="private">Private</option>
+                <option value="public">Public</option>                
+              </select>
+              <div class="invalid-feedback">
+                Please select a valid Privacy.
+              </div>
+            </div>
+            <div class="col-md-6 mb-3">
+              <label for="front_video_id">Front Video-Id</label>
+              <input type="text" class="form-control" name="front_video_id" id="front_video_id" placeholder="string" value="" required="">
+              <div class="invalid-feedback">
+                Enter Front-Video-Id.
+              </div>
+            </div>
+          </div>
+        
+          <hr class="mb-4">
+          <button id="setParameters" class="btn btn-primary btn-lg btn-block" type="submit">Set</button>
+        </form>
+      </div>
+    </div>
+
+    <div id="table" class="row">
+        <div class="py-2 text-center">
+              <table class="table table-borderless"> 
+                <tr><td><a href="/test">Test an API request</a></td> 
+                <td>Submit an API request and see a formatted JSON response.  
+                    Go through the authorization flow if there are no stored  
+                    credentials for the user.</td></tr> 
+                <tr><td><a href="/authorize">Test the auth flow directly</a></td> 
+                <td>Go directly to the authorization flow. If there are stored  
+                    credentials, you still might not be prompted to reauthorize  
+                    the application.</td></tr> 
+                <tr><td><a href="/revoke">Revoke current credentials</a></td> 
+                <td>Revoke the access token associated with the current user  
+                    session. After revoking credentials, if you go to the test  
+                    page, you should see an <code>invalid_grant</code> error. 
+                </td></tr> 
+                <tr><td><a href="/clear">Clear Flask session credentials</a></td> 
+                <td>Clear the access token currently stored in the user session.  
+                    After clearing the token, if you <a href="/test">test the  
+                    API request</a> again, you should go back to the auth flow. 
+                </td></tr></table>
+        </div>
+    </div>
+
+    <footer class="my-3 pt-3 text-muted text-center text-small">
+      <p class="mb-1">© 2019 <a href="www.fiverr.com/oxama_baig">Oxama Baig</a></p>
+    </footer>
+  </div>
+
+  <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"> </script>
+  <script type="text/javascript">
+    document.getElementById("table").style.display = "none";
+    try {
+      document.getElementById("hide").style.display = "none";      
+    } catch (error) {
+      console.log(error)
+    }
+    try {
+      document.getElementById("show").style.display = "block";      
+    } catch (error) {
+      console.log(error)
+    }
+
+
+    document.getElementById("set_parameters").onclick = function() { 
+      document.getElementById("table").style.display = "none";
+      document.getElementById("main-page").style.display = "block";
+    } 
+
+    document.getElementById("results_table").onclick = function() { 
+      document.getElementById("table").style.display = "block";
+      document.getElementById("main-page").style.display = "none"; 
+    } 
+        
+  </script>
+  <script src={{ url_for('static', filename = 'js/bootstrap.bundle.min.js') }}></script>
+  <script src={{ url_for('static', filename = 'js/form-validation.js') }}></script>
+</html>
